@@ -3,6 +3,7 @@ package com.example.leopo.popularmovies;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.example.leopo.popularmovies.utilities.MovieJsonUtils;
 import com.example.leopo.popularmovies.utilities.NetworkUtils;
@@ -11,16 +12,22 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
+    private TextView mMovieView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mMovieView = (TextView) findViewById(R.id.tv_title);
+
         loadMovieData();
     }
 
+    String type = "popular";
+
     private void loadMovieData() {
-        new FetchMoviesTask().execute();
+        new FetchMoviesTask().execute(type);
     }
 
     public class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
@@ -40,12 +47,21 @@ public class MainActivity extends AppCompatActivity {
             try {
                 String movieResponse = NetworkUtils.getApiResponse(moviesUrl);
 
-                String[] simpleJsonMovieData = MovieJsonUtils.getSimpleMovieStringsFromJson(MainActivity.this, movieResponse);
+                String[] simpleJsonMovieData = MovieJsonUtils.getSimpleMovieImagesFromJson(MainActivity.this, movieResponse);
 
                 return simpleJsonMovieData;
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String[] movieData) {
+            if (movieData != null) {
+                for (String movieString: movieData) {
+                    mMovieView.append((movieString) + "\n\n\n");
+                }
             }
         }
     }
