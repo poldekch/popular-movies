@@ -5,10 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.widget.TextView;
 
 import com.example.leopo.popularmovies.utilities.MovieJsonUtils;
 import com.example.leopo.popularmovies.utilities.NetworkUtils;
+import com.squareup.picasso.Picasso;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -62,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String[] movieData) {
 
+            if (movieData == null) {
+                return;
+            }
             RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_movies);
             recyclerView.setHasFixedSize(true);
             RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 2);
@@ -80,5 +86,13 @@ public class MainActivity extends AppCompatActivity {
             MovieAdapter adapter = new MovieAdapter(getApplicationContext(), movies);
             recyclerView.setAdapter(adapter);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }
