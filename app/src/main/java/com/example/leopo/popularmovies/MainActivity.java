@@ -40,6 +40,12 @@ public class MainActivity extends AppCompatActivity {
 
     public class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
 
+        /**
+         * Background load
+         *
+         * @param params
+         * @return
+         */
         @Override
         protected String[] doInBackground(String... params) {
             if (params.length == 0) {
@@ -63,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        /**
+         * Process loaded movie data
+         *
+         * @param movieData
+         */
         @Override
         protected void onPostExecute(String[] movieData) {
 
@@ -89,6 +100,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Create menu with options
+     *
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
@@ -97,6 +114,12 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Reload data when changed sorting type
+     *
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -113,6 +136,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Turning on currently selected menu option
+     *
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);

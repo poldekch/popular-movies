@@ -22,6 +22,12 @@ public class NetworkUtils {
     final static String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
     final static String IMAGE_SIZE = "w185";
 
+    /**
+     * Building URL for main API
+     *
+     * @param order
+     * @return
+     */
     public static URL buildUrl(String order) {
         Uri buildUri = Uri.parse(MOVIEDB_BASE_URL + order).buildUpon()
                 .appendQueryParameter(PARAM_KEY, API_KEY).build();
@@ -36,6 +42,33 @@ public class NetworkUtils {
         return url;
     }
 
+    /**
+     * Building URL for image
+     *
+     * @param poster
+     * @return
+     */
+    public static URL buildImageUrl(String poster) {
+        Uri buildUri = Uri.parse(IMAGE_BASE_URL + IMAGE_SIZE + "/" + poster).buildUpon()
+                .appendQueryParameter(PARAM_KEY, API_KEY).build();
+
+        URL url = null;
+        try {
+            url = new URL(buildUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    /**
+     * Read API
+     *
+     * @param url
+     * @return
+     * @throws IOException
+     */
     public static String getApiResponse(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
@@ -52,19 +85,5 @@ public class NetworkUtils {
         } finally {
             urlConnection.disconnect();
         }
-    }
-
-    public static URL buildImageUrl(String poster) {
-        Uri buildUri = Uri.parse(IMAGE_BASE_URL + IMAGE_SIZE + "/" + poster).buildUpon()
-                .appendQueryParameter(PARAM_KEY, API_KEY).build();
-
-        URL url = null;
-        try {
-            url = new URL(buildUri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        return url;
     }
 }
