@@ -7,6 +7,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.leopo.popularmovies.utilities.MovieJsonUtils;
@@ -23,17 +24,17 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView mMovieView;
 
+    String mType = NetworkUtils.ORDER_POPULAR;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loadMovieData();
+        loadMovieData(mType);
     }
 
-    String type = "popular";
-
-    private void loadMovieData() {
+    private void loadMovieData(String type) {
         new FetchMoviesTask().execute(type);
     }
 
@@ -95,4 +96,34 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sort_popularity:
+                mType = NetworkUtils.ORDER_POPULAR;
+                loadMovieData(mType);
+                return true;
+            case R.id.sort_rating:
+                mType = NetworkUtils.ORDER_TOP_RATED;
+                loadMovieData(mType);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        if (mType == NetworkUtils.ORDER_POPULAR) {
+            menu.findItem(R.id.sort_popularity).setChecked(true);
+        } else if (mType == NetworkUtils.ORDER_TOP_RATED) {
+            menu.findItem(R.id.sort_rating).setChecked(true);
+        }
+
+        return true;
+    }
+
 }

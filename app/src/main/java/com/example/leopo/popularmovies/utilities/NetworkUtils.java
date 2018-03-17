@@ -11,8 +11,8 @@ import java.util.Scanner;
 
 public class NetworkUtils {
 
-    final static String ORDER_POPULAR = "popular";
-    final static String ORDER_TOP_RATED = "top_rated";
+    final public static String ORDER_POPULAR = "popular";
+    final public static String ORDER_TOP_RATED = "top_rated";
 
     final static String PARAM_KEY = "api_key";
     final static String API_KEY = "";
