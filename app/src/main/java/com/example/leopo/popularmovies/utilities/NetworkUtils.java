@@ -54,8 +54,8 @@ public class NetworkUtils {
         }
     }
 
-    public static URL buildImageUrl() {
-        Uri buildUri = Uri.parse(IMAGE_BASE_URL + IMAGE_SIZE).buildUpon()
+    public static URL buildImageUrl(String poster) {
+        Uri buildUri = Uri.parse(IMAGE_BASE_URL + IMAGE_SIZE + "/" + poster).buildUpon()
                 .appendQueryParameter(PARAM_KEY, API_KEY).build();
 
         URL url = null;

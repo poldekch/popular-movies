@@ -3,12 +3,18 @@ package com.example.leopo.popularmovies;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
 import com.example.leopo.popularmovies.utilities.MovieJsonUtils;
 import com.example.leopo.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,8 +24,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mMovieView = (TextView) findViewById(R.id.tv_title);
 
         loadMovieData();
     }
@@ -34,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String[] doInBackground(String... params) {
-            // TODO implement
             if (params.length == 0) {
                 return null;
             }
@@ -58,11 +61,24 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String[] movieData) {
-            if (movieData != null) {
-                for (String movieString: movieData) {
-                    mMovieView.append((movieString) + "\n\n\n");
-                }
+
+            RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_movies);
+            recyclerView.setHasFixedSize(true);
+            RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 2);
+            recyclerView.setLayoutManager(layoutManager);
+
+            ArrayList<Movie> movies = new ArrayList<Movie>();
+            Movie movie;
+
+
+            for (int i=0; i<movieData.length; i++) {
+                movie = new Movie();
+                movie.setMovie_poster_url(movieData[i]);
+                movies.add(movie);
             }
+
+            MovieAdapter adapter = new MovieAdapter(getApplicationContext(), movies);
+            recyclerView.setAdapter(adapter);
         }
     }
 }

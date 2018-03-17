@@ -61,7 +61,4 @@ public class MovieJsonUtils {
 
         return parsedMoviesData;
     }
-
-
-
 }
