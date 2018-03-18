@@ -2,12 +2,11 @@ package com.example.leopo.popularmovies;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.leopo.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
@@ -17,48 +16,69 @@ import java.util.ArrayList;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
-    private ArrayList<Movie> movies;
-    private Context context;
+    private ArrayList<Movie> mMovies;
+    private Context mContext;
 
-    public MovieAdapter(Context context, ArrayList<Movie> movies) {
-        this.movies = movies;
-        this.context = context;
+    private final MovieAdapterOnClickHandler mClickHandler;
+
+    public interface MovieAdapterOnClickHandler {
+        void onClick(int clickedMovieId);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param clickHandler
+     */
+    public MovieAdapter(MovieAdapterOnClickHandler clickHandler) {
+        mClickHandler = clickHandler;
+    }
+
+    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
+
+        public final ImageView mPoster;
+
+        public MovieAdapterViewHolder(View view) {
+            super(view);
+
+            mPoster = (ImageView) view.findViewById(R.id.iv_poster);
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int clickedPosition = getAdapterPosition();
+            mClickHandler.onClick(clickedPosition);
+        }
     }
 
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int i) {
-        LayoutInflater inflater = LayoutInflater.from(context); //parent.getContext() TODO
+        mContext = parent.getContext();
 
-        View view = inflater.inflate(R.layout.movie_list_item, parent, false);
+        int layoutIdForListItem = R.layout.movie_list_item;
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+
+        View view = inflater.inflate(layoutIdForListItem, parent, false);
         return new MovieAdapterViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
 
-        URL url = NetworkUtils.buildImageUrl(movies.get(position).getMovie_poster_url());
-        Picasso.with(context).load(url.toString()).into(holder.iv_poster);
+        URL url = NetworkUtils.buildImageUrl(mMovies.get(position).getMovie_poster_url());
+        Picasso.with(mContext).load(url.toString()).into(holder.mPoster);
     }
 
     @Override
     public int getItemCount() {
-        return movies.size();
+        if (null == mMovies) return 0;
+        return mMovies.size();
+
     }
 
-    class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        private ImageView iv_poster;
-
-        public MovieAdapterViewHolder(View view) {
-            super(view);
-
-            iv_poster = (ImageView) view.findViewById(R.id.iv_poster);
-//            view.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-
-        }
+    public void setMovieData(ArrayList<Movie> movieData) {
+        mMovies = movieData;
+        notifyDataSetChanged();
     }
 }

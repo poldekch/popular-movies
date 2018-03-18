@@ -1,5 +1,6 @@
 package com.example.leopo.popularmovies;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,17 +9,25 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.leopo.popularmovies.MovieAdapter.MovieAdapterOnClickHandler;
 import com.example.leopo.popularmovies.utilities.MovieJsonUtils;
+import com.example.leopo.popularmovies.MovieDetailsActivity;
 import com.example.leopo.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MovieAdapterOnClickHandler{
 
-    private TextView mMovieView;
+    private RecyclerView mRecyclerView;
+    private MovieAdapter mMovieAdapter;
+
+    private TextView mErrorMessageDisplay;
+    private ProgressBar mLoadingIndicator;
 
     String mOrder = NetworkUtils.ORDER_POPULAR;
 
@@ -27,14 +36,51 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loadMovieData(mOrder);
+        mRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
+        mErrorMessageDisplay = (TextView)findViewById(R.id.tv_error_message_display);
+
+        GridLayoutManager layoutManager
+                = new GridLayoutManager(this, 2);
+
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setHasFixedSize(true);
+
+        mMovieAdapter = new MovieAdapter(this);
+        mRecyclerView.setAdapter(mMovieAdapter);
+
+        mLoadingIndicator = (ProgressBar)findViewById(R.id.pb_loading_indicator) ;
+
+        loadMovieData();
     }
 
-    private void loadMovieData(String type) {
-        new FetchMoviesTask().execute(type);
+    private void loadMovieData() {
+        showMovieDataView();
+        new FetchMoviesTask().execute(mOrder);
     }
+
+    @Override
+    public void onClick(int clickedMovieId) {
+
+    }
+
+    private void showMovieDataView() {
+        mErrorMessageDisplay.setVisibility(View.INVISIBLE);
+        mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    private void showErrorMessage() {
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mErrorMessageDisplay.setVisibility(View.VISIBLE);
+    }
+
 
     public class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mLoadingIndicator.setVisibility(View.VISIBLE);
+        }
 
         /**
          * Background load
@@ -49,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             String order = params[0];
-
             URL moviesUrl = NetworkUtils.buildUrl(order);
 
             try {
@@ -71,27 +116,25 @@ public class MainActivity extends AppCompatActivity {
          */
         @Override
         protected void onPostExecute(String[] movieData) {
+            mLoadingIndicator.setVisibility(View.INVISIBLE);
 
-            if (movieData == null) {
-                return;
-            }
-            RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_movies);
-            recyclerView.setHasFixedSize(true);
-            RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 2);
-            recyclerView.setLayoutManager(layoutManager);
+            if (movieData != null) {
+                showMovieDataView();
+                ArrayList<Movie> movies = new ArrayList<Movie>();
+                Movie movie;
+                for (int i=0; i<movieData.length; i++) {
+                    movie = new Movie();
+                    movie.setMovie_poster_url(movieData[i]);
+                    movies.add(movie);
+                }
 
-            ArrayList<Movie> movies = new ArrayList<Movie>();
-            Movie movie;
-
-
-            for (int i=0; i<movieData.length; i++) {
-                movie = new Movie();
-                movie.setMovie_poster_url(movieData[i]);
-                movies.add(movie);
+                mMovieAdapter.setMovieData(movies);
+            } else {
+                showErrorMessage();
             }
 
-            MovieAdapter adapter = new MovieAdapter(getApplicationContext(), movies);
-            recyclerView.setAdapter(adapter);
+//            MovieAdapter adapter = new MovieAdapter(getApplicationContext(), movies, this);
+//            recyclerView.setAdapter(adapter);
         }
     }
 
@@ -120,11 +163,11 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.sort_popularity:
                 mOrder = NetworkUtils.ORDER_POPULAR;
-                loadMovieData(mOrder);
+                loadMovieData();
                 return true;
             case R.id.sort_rating:
                 mOrder = NetworkUtils.ORDER_TOP_RATED;
-                loadMovieData(mOrder);
+                loadMovieData();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -149,6 +192,4 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
     }
-
-
 }
