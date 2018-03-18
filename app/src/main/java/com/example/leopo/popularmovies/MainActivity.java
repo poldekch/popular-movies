@@ -1,5 +1,6 @@
 package com.example.leopo.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.leopo.popularmovies.MovieAdapter.MovieAdapterOnClickHandler;
 import com.example.leopo.popularmovies.utilities.MovieJsonUtils;
@@ -60,7 +62,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
     @Override
     public void onClick(int clickedMovieId) {
+        Context context = this;
+        Toast.makeText(context, String.valueOf(clickedMovieId), Toast.LENGTH_SHORT).show();
 
+        Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
+        startActivity(intent);
     }
 
     private void showMovieDataView() {
