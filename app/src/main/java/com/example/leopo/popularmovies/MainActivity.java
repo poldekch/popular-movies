@@ -12,26 +12,22 @@ import android.widget.TextView;
 
 import com.example.leopo.popularmovies.utilities.MovieJsonUtils;
 import com.example.leopo.popularmovies.utilities.NetworkUtils;
-import com.squareup.picasso.Picasso;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView mMovieView;
 
-    String mType = NetworkUtils.ORDER_POPULAR;
+    String mOrder = NetworkUtils.ORDER_POPULAR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loadMovieData(mType);
+        loadMovieData(mOrder);
     }
 
     private void loadMovieData(String type) {
@@ -52,10 +48,9 @@ public class MainActivity extends AppCompatActivity {
                 return null;
             }
 
-            String type = params[0];
+            String order = params[0];
 
-            // TODO should be order line below
-            URL moviesUrl = NetworkUtils.buildUrl(type);
+            URL moviesUrl = NetworkUtils.buildUrl(order);
 
             try {
                 String movieResponse = NetworkUtils.getApiResponse(moviesUrl);
@@ -124,12 +119,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sort_popularity:
-                mType = NetworkUtils.ORDER_POPULAR;
-                loadMovieData(mType);
+                mOrder = NetworkUtils.ORDER_POPULAR;
+                loadMovieData(mOrder);
                 return true;
             case R.id.sort_rating:
-                mType = NetworkUtils.ORDER_TOP_RATED;
-                loadMovieData(mType);
+                mOrder = NetworkUtils.ORDER_TOP_RATED;
+                loadMovieData(mOrder);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -146,13 +141,14 @@ public class MainActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        if (mType == NetworkUtils.ORDER_POPULAR) {
+        if (mOrder == NetworkUtils.ORDER_POPULAR) {
             menu.findItem(R.id.sort_popularity).setChecked(true);
-        } else if (mType == NetworkUtils.ORDER_TOP_RATED) {
+        } else if (mOrder == NetworkUtils.ORDER_TOP_RATED) {
             menu.findItem(R.id.sort_rating).setChecked(true);
         }
 
         return true;
     }
+
 
 }
