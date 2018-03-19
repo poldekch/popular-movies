@@ -61,9 +61,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
     @Override
     public void onClick(int clickedMovieId) {
-        Context context = this;
-        Toast.makeText(context, String.valueOf(clickedMovieId), Toast.LENGTH_SHORT).show();
-
         Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
 
         Movie movie = mMovieAdapter.getMovie(clickedMovieId);
