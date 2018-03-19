@@ -1,6 +1,5 @@
 package com.example.leopo.popularmovies;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.leopo.popularmovies.MovieAdapter.MovieAdapterOnClickHandler;
 import com.example.leopo.popularmovies.utilities.MovieJsonUtils;
@@ -30,15 +28,15 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
 
-    String mOrder = NetworkUtils.ORDER_POPULAR;
+    private String mOrder = NetworkUtils.ORDER_POPULAR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
-        mErrorMessageDisplay = (TextView)findViewById(R.id.tv_error_message_display);
+        mRecyclerView = findViewById(R.id.rv_movies);
+        mErrorMessageDisplay = findViewById(R.id.tv_error_message_display);
 
         GridLayoutManager layoutManager
                 = new GridLayoutManager(this, 2);
@@ -49,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         mMovieAdapter = new MovieAdapter(this);
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        mLoadingIndicator = (ProgressBar)findViewById(R.id.pb_loading_indicator) ;
+        mLoadingIndicator = findViewById(R.id.pb_loading_indicator) ;
 
         loadMovieData();
     }
@@ -90,8 +88,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         /**
          * Background load
          *
-         * @param params
-         * @return
+         * @param params Parameters passed to bacground task. First param needs to be sorting type
+         * @return ArrayList of movies
          */
         @Override
         protected ArrayList<Movie> doInBackground(String... params) {
@@ -104,10 +102,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
             try {
                 String movieResponse = NetworkUtils.getApiResponse(moviesUrl);
-
-                ArrayList<Movie> simpleJsonMovieData = MovieJsonUtils.getSimpleMovieFromJson(MainActivity.this, movieResponse);
-
-                return simpleJsonMovieData;
+                return MovieJsonUtils.getSimpleMovieFromJson(MainActivity.this, movieResponse);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;

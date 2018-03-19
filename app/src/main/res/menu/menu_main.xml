@@ -3,7 +3,7 @@
 xmlns:tools="http://schemas.android.com/tools"
 tools:context=".MainActivity">
 
-<item android:id="@+id/menu" android:title="Settings">
+<item android:id="@+id/menu" android:title="@string/settings">
     <group android:id="@+id/group" android:checkableBehavior="single">
         <item android:checked="true" android:title="@string/sort_popularity" android:id="@+id/sort_popularity"/>
         <item android:checked="false" android:title="@string/sort_rating" android:id="@+id/sort_rating"/>

@@ -14,13 +14,13 @@ public class NetworkUtils {
     final public static String ORDER_POPULAR = "popular";
     final public static String ORDER_TOP_RATED = "top_rated";
 
-    final static String PARAM_KEY = "api_key";
-    final static String API_KEY = "";
+    final private static String PARAM_KEY = "api_key";
+    final private static String API_KEY = "";
 
-    final static String MOVIEDB_BASE_URL = "http://api.themoviedb.org/3/movie/";
+    final private static String MOVIEDB_BASE_URL = "http://api.themoviedb.org/3/movie/";
 
-    final static String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
-    final static String IMAGE_SIZE = "w185";
+    final private static String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
+    final private static String IMAGE_SIZE = "w185";
 
     /**
      * Building URL for main API

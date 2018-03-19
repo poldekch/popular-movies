@@ -53,7 +53,7 @@ public class MovieJsonUtils {
 
         JSONArray results = movies.optJSONArray(RESULTS);
 
-        ArrayList<Movie> parsedMoviesData = new ArrayList<Movie>();
+        ArrayList<Movie> parsedMoviesData = new ArrayList<>();
 
         for (int i=0; i<results.length(); i++) {
             JSONObject jsonMovie = (JSONObject) results.get(i);
