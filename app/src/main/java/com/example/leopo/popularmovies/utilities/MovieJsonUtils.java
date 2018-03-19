@@ -65,6 +65,7 @@ public class MovieJsonUtils {
             movie.setTitle(jsonMovie.optString(TITLE));
             movie.setReleaseDate(jsonMovie.optString(RELEASE_DATE));
             movie.setMoviePosterUrl(jsonMovie.optString(POSTER_PATH));
+            movie.setVoteAverage(jsonMovie.optString(VOTE_AVERAGE));
             movie.setPlotSynopsis(jsonMovie.optString(OVERVIEW));
             parsedMoviesData.add(movie);
         }

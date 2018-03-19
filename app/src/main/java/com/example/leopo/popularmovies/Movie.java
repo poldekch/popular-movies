@@ -8,7 +8,7 @@ public class Movie implements Serializable{
     private String mTitle;
     private String mReleaseDate;
     private String mMoviePosterUrl;
-    private float mVoteAverage;
+    private String mVoteAverage;
     private String mPlotSynopsis;
 
     public String getTitle() {
@@ -35,11 +35,11 @@ public class Movie implements Serializable{
         mMoviePosterUrl = moviePosterUrl;
     }
 
-    public float getVoteAverage() {
+    public String getVoteAverage() {
         return mVoteAverage;
     }
 
-    public void setVoteAverage(float mVoteAverage) {
+    public void setVoteAverage(String mVoteAverage) {
         this.mVoteAverage = mVoteAverage;
     }
 

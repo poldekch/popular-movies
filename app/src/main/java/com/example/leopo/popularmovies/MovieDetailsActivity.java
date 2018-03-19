@@ -36,14 +36,14 @@ public class MovieDetailsActivity extends AppCompatActivity {
         title.setText((CharSequence) mMovie.getTitle());
 
         TextView releaseDate = (TextView)findViewById(R.id.tv_release_date);
-        releaseDate.setText(mMovie.getReleaseDate());
+        releaseDate.setText("Released: " + mMovie.getReleaseDate());
 
         ImageView poster = (ImageView)findViewById(R.id.iv_poster);
         URL url = NetworkUtils.buildImageUrl(mMovie.getMoviePosterUrl());
         Picasso.with(this).load(url.toString()).into(poster);
 
         TextView voteAverage = (TextView)findViewById(R.id.tv_vote_average);
-        voteAverage.setText(String.valueOf(mMovie.getVoteAverage()) + "/10");
+        voteAverage.setText("Rating: " + mMovie.getVoteAverage() + "/10");
 
         TextView plotSynopsis = (TextView)findViewById(R.id.tv_plot_synopsis);
         plotSynopsis.setText(mMovie.getPlotSynopsis());
