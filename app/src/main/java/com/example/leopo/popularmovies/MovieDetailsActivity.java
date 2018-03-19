@@ -9,10 +9,7 @@ import android.widget.TextView;
 import com.example.leopo.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.net.URL;
-import java.util.Date;
 
 public class MovieDetailsActivity extends AppCompatActivity {
 

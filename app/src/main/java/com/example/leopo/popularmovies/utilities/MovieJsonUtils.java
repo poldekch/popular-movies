@@ -40,8 +40,6 @@ public class MovieJsonUtils {
         final String OVERVIEW = "overview";
         final String RELEASE_DATE = "release_date";
 
-//        String[] parsedMoviesData = null;
-
         JSONObject movies = new JSONObject(moviesJsonString);
 
         // Error check

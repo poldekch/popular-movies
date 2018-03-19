@@ -1,7 +1,6 @@
 package com.example.leopo.popularmovies;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class Movie implements Serializable{
 
@@ -23,8 +22,8 @@ public class Movie implements Serializable{
         return mReleaseDate;
     }
 
-    public void setReleaseDate(String mReleaseDate) {
-        this.mReleaseDate = mReleaseDate;
+    public void setReleaseDate(String releaseDate) {
+        mReleaseDate = releaseDate;
     }
 
     public String getMoviePosterUrl() {
@@ -39,15 +38,15 @@ public class Movie implements Serializable{
         return mVoteAverage;
     }
 
-    public void setVoteAverage(String mVoteAverage) {
-        this.mVoteAverage = mVoteAverage;
+    public void setVoteAverage(String voteAverage) {
+        mVoteAverage = voteAverage;
     }
 
     public String getPlotSynopsis() {
         return mPlotSynopsis;
     }
 
-    public void setPlotSynopsis(String mPlotSynopsis) {
-        this.mPlotSynopsis = mPlotSynopsis;
+    public void setPlotSynopsis(String plotSynopsis) {
+        mPlotSynopsis = plotSynopsis;
     }
 }
