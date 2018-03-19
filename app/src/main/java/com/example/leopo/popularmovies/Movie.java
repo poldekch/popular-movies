@@ -1,25 +1,53 @@
 package com.example.leopo.popularmovies;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class Movie implements Serializable{
 
-    private String title;
-    private String movie_poster_url;
+    private String mTitle;
+    private String mReleaseDate;
+    private String mMoviePosterUrl;
+    private float mVoteAverage;
+    private String mPlotSynopsis;
 
     public String getTitle() {
-        return title;
+        return mTitle;
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        mTitle = title;
     }
 
-    public String getMovie_poster_url() {
-        return movie_poster_url;
+    public String getReleaseDate() {
+        return mReleaseDate;
     }
 
-    public void setMovie_poster_url(String movie_poster_url) {
-        this.movie_poster_url = movie_poster_url;
+    public void setReleaseDate(String mReleaseDate) {
+        this.mReleaseDate = mReleaseDate;
+    }
+
+    public String getMoviePosterUrl() {
+        return mMoviePosterUrl;
+    }
+
+    public void setMoviePosterUrl(String moviePosterUrl) {
+        mMoviePosterUrl = moviePosterUrl;
+    }
+
+    public float getVoteAverage() {
+        return mVoteAverage;
+    }
+
+    public void setVoteAverage(float mVoteAverage) {
+        this.mVoteAverage = mVoteAverage;
+    }
+
+    public String getPlotSynopsis() {
+        return mPlotSynopsis;
+    }
+
+    public void setPlotSynopsis(String mPlotSynopsis) {
+        this.mPlotSynopsis = mPlotSynopsis;
     }
 }

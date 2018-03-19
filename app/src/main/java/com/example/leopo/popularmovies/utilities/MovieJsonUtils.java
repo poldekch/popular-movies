@@ -61,9 +61,11 @@ public class MovieJsonUtils {
             JSONObject jsonMovie = (JSONObject) results.get(i);
             // TODO complete parsing
             Movie movie = new Movie();
-            movie.setMovie_poster_url(jsonMovie.optString(POSTER_PATH));
-            movie.setTitle(jsonMovie.optString(TITLE));
 
+            movie.setTitle(jsonMovie.optString(TITLE));
+            movie.setReleaseDate(jsonMovie.optString(RELEASE_DATE));
+            movie.setMoviePosterUrl(jsonMovie.optString(POSTER_PATH));
+            movie.setPlotSynopsis(jsonMovie.optString(OVERVIEW));
             parsedMoviesData.add(movie);
         }
 
