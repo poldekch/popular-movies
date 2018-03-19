@@ -3,6 +3,7 @@ package com.example.leopo.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -17,7 +18,6 @@ import android.widget.Toast;
 
 import com.example.leopo.popularmovies.MovieAdapter.MovieAdapterOnClickHandler;
 import com.example.leopo.popularmovies.utilities.MovieJsonUtils;
-import com.example.leopo.popularmovies.MovieDetailsActivity;
 import com.example.leopo.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
@@ -66,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         Toast.makeText(context, String.valueOf(clickedMovieId), Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
+
+        Movie movie = mMovieAdapter.getMovie(clickedMovieId);
+        intent.putExtra("Movie", movie);
         startActivity(intent);
     }
 
@@ -80,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     }
 
 
-    public class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
+    public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
 
         @Override
         protected void onPreExecute() {
@@ -95,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
          * @return
          */
         @Override
-        protected String[] doInBackground(String... params) {
+        protected ArrayList<Movie> doInBackground(String... params) {
             if (params.length == 0) {
                 return null;
             }
@@ -106,8 +109,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
             try {
                 String movieResponse = NetworkUtils.getApiResponse(moviesUrl);
 
-                String[] simpleJsonMovieData = MovieJsonUtils.getSimpleMovieImagesFromJson(MainActivity.this, movieResponse);
+                ArrayList<Movie> simpleJsonMovieData = MovieJsonUtils.getSimpleMovieImagesFromJson(MainActivity.this, movieResponse);
 
+//                String[] simpleJsonMovieData = new String["aaa", "bbb"];
                 return simpleJsonMovieData;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -121,16 +125,16 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
          * @param movieData
          */
         @Override
-        protected void onPostExecute(String[] movieData) {
+        protected void onPostExecute(ArrayList<Movie> movieData) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
 
             if (movieData != null) {
                 showMovieDataView();
                 ArrayList<Movie> movies = new ArrayList<Movie>();
                 Movie movie;
-                for (int i=0; i<movieData.length; i++) {
+                for (int i=0; i<movieData.size(); i++) {
                     movie = new Movie();
-                    movie.setMovie_poster_url(movieData[i]);
+                    movie.setMovie_poster_url(movieData.get(i).getMovie_poster_url());
                     movies.add(movie);
                 }
 

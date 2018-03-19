@@ -25,6 +25,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         void onClick(int clickedMovieId);
     }
 
+    public Movie getMovie(int i) {
+        return mMovies.get(i);
+    }
+
     /**
      * Constructor
      *

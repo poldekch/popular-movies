@@ -13,8 +13,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         Intent startingIntent = getIntent();
 
-        if (startingIntent.hasExtra(Intent.EXTRA_TEXT)) {
+        Movie movie = (Movie) startingIntent.getSerializableExtra("Movie");
 
-        }
+        String title = movie.getTitle();
+
+        return;
     }
 }

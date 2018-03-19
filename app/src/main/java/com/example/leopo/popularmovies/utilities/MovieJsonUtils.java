@@ -2,13 +2,17 @@ package com.example.leopo.popularmovies.utilities;
 
 import android.content.Context;
 
+import com.example.leopo.popularmovies.Movie;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class MovieJsonUtils {
 
-    public static String[] getSimpleMovieImagesFromJson(Context context, String moviesJsonString)
+    public static ArrayList<Movie> getSimpleMovieImagesFromJson(Context context, String moviesJsonString)
         throws JSONException {
 
         final String PAGE = "page";
@@ -36,7 +40,7 @@ public class MovieJsonUtils {
         final String OVERVIEW = "overview";
         final String RELEASE_DATE = "release_date";
 
-        String[] parsedMoviesData = null;
+//        String[] parsedMoviesData = null;
 
         JSONObject movies = new JSONObject(moviesJsonString);
 
@@ -51,12 +55,16 @@ public class MovieJsonUtils {
 
         JSONArray results = movies.optJSONArray(RESULTS);
 
-        parsedMoviesData = new String[results.length()];
+        ArrayList<Movie> parsedMoviesData = new ArrayList<Movie>();
 
         for (int i=0; i<results.length(); i++) {
+            JSONObject jsonMovie = (JSONObject) results.get(i);
             // TODO complete parsing
-            JSONObject movie = (JSONObject) results.get(i);
-            parsedMoviesData[i] = movie.optString(POSTER_PATH);
+            Movie movie = new Movie();
+            movie.setMovie_poster_url(jsonMovie.optString(POSTER_PATH));
+            movie.setTitle(jsonMovie.optString(TITLE));
+
+            parsedMoviesData.add(movie);
         }
 
         return parsedMoviesData;

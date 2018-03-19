@@ -1,8 +1,19 @@
 package com.example.leopo.popularmovies;
 
-public class Movie {
+import java.io.Serializable;
 
+public class Movie implements Serializable{
+
+    private String title;
     private String movie_poster_url;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getMovie_poster_url() {
         return movie_poster_url;
