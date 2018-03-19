@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class MovieJsonUtils {
 
-    public static ArrayList<Movie> getSimpleMovieImagesFromJson(Context context, String moviesJsonString)
+    public static ArrayList<Movie> getSimpleMovieFromJson(Context context, String moviesJsonString)
         throws JSONException {
 
         final String PAGE = "page";

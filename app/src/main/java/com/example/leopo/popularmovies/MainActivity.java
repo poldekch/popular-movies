@@ -3,7 +3,6 @@ package com.example.leopo.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -109,9 +108,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
             try {
                 String movieResponse = NetworkUtils.getApiResponse(moviesUrl);
 
-                ArrayList<Movie> simpleJsonMovieData = MovieJsonUtils.getSimpleMovieImagesFromJson(MainActivity.this, movieResponse);
+                ArrayList<Movie> simpleJsonMovieData = MovieJsonUtils.getSimpleMovieFromJson(MainActivity.this, movieResponse);
 
-//                String[] simpleJsonMovieData = new String["aaa", "bbb"];
                 return simpleJsonMovieData;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -130,21 +128,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
             if (movieData != null) {
                 showMovieDataView();
-                ArrayList<Movie> movies = new ArrayList<Movie>();
-                Movie movie;
-                for (int i=0; i<movieData.size(); i++) {
-                    movie = new Movie();
-                    movie.setMovie_poster_url(movieData.get(i).getMovie_poster_url());
-                    movies.add(movie);
-                }
-
-                mMovieAdapter.setMovieData(movies);
+                mMovieAdapter.setMovieData(movieData);
             } else {
                 showErrorMessage();
             }
-
-//            MovieAdapter adapter = new MovieAdapter(getApplicationContext(), movies, this);
-//            recyclerView.setAdapter(adapter);
         }
     }
 
