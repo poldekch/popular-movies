@@ -19,6 +19,9 @@ public class NetworkUtils {
 
     final private static String MOVIEDB_BASE_URL = "http://api.themoviedb.org/3/movie/";
 
+    final private static String VIDEOS = "videos";
+    final private static String REVIEWS = "reviews";
+
     final private static String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
     final private static String IMAGE_SIZE = "w185";
 
@@ -50,6 +53,34 @@ public class NetworkUtils {
      */
     public static URL buildImageUrl(String poster) {
         Uri buildUri = Uri.parse(IMAGE_BASE_URL + IMAGE_SIZE + "/" + poster).buildUpon()
+                .appendQueryParameter(PARAM_KEY, API_KEY).build();
+
+        URL url = null;
+        try {
+            url = new URL(buildUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    public static URL buildVideosUrl(String movieId) {
+        Uri buildUri = Uri.parse(MOVIEDB_BASE_URL + movieId + "/" + VIDEOS).buildUpon()
+                .appendQueryParameter(PARAM_KEY, API_KEY).build();
+
+        URL url = null;
+        try {
+            url = new URL(buildUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    public static URL buildReviewsUrl(String movieId) {
+        Uri buildUri = Uri.parse(MOVIEDB_BASE_URL + movieId + "/" + REVIEWS).buildUpon()
                 .appendQueryParameter(PARAM_KEY, API_KEY).build();
 
         URL url = null;
