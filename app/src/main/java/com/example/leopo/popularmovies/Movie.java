@@ -1,14 +1,23 @@
 package com.example.leopo.popularmovies;
 
-import java.io.Serializable;
+        import java.io.Serializable;
 
 public class Movie implements Serializable{
 
+    private Integer mId;
     private String mTitle;
     private String mReleaseDate;
     private String mMoviePosterUrl;
     private String mVoteAverage;
     private String mPlotSynopsis;
+
+    public Integer getId() {
+        return mId;
+    }
+
+    public void setId(Integer id) {
+        mId = id;
+    }
 
     public String getTitle() {
         return mTitle;

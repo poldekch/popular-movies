@@ -1,15 +1,18 @@
 package com.example.leopo.popularmovies;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.leopo.popularmovies.utilities.NetworkUtils;
+import com.example.leopo.popularmovies.utilities.TrailerJsonUtils;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MovieDetailsActivity extends AppCompatActivity {
 
@@ -24,6 +27,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         mMovie = (Movie) startingIntent.getSerializableExtra("Movie");
 
+        loadTrailerData();
         populateView();
     }
 
@@ -44,5 +48,30 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         TextView plotSynopsis = findViewById(R.id.tv_plot_synopsis);
         plotSynopsis.setText(mMovie.getPlotSynopsis());
+    }
+
+    private void loadTrailerData() {
+//        showMovieDataView(); // TODO
+        new MovieDetailsActivity.FetchMovieTrailers().execute(mMovie.getId().toString());
+    }
+
+    public class FetchMovieTrailers extends AsyncTask<String, Void, ArrayList<Trailer>> {
+        @Override
+        protected ArrayList<Trailer> doInBackground(String... params) {
+            if (params.length == 0) {
+                return null;
+            }
+
+            String movieId = params[0];
+            URL trailersUrl = NetworkUtils.buildVideosUrl(movieId);
+
+            try {
+                String trailersResponse = NetworkUtils.getApiResponse(trailersUrl);
+                return TrailerJsonUtils.getTrailersFromJson(MovieDetailsActivity.this, trailersResponse);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
     }
 }
