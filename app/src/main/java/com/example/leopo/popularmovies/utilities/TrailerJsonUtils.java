@@ -46,14 +46,16 @@ public class TrailerJsonUtils {
 //        final String TOTAL_RESULTS = "total_results";
 //        final String TOTAL_PAGES = "total_pages";
 //
-//        final String RESULTS = "results";
+        final String RESULTS = "results";
 //
 //        final String STATUS_CODE = "status_code";
 //        final String STATUS_MESSAGE = "status_message";
 //        final String SUCCESS = "success";
 //
 //        final String VOTE_COUNT = "vote_count";
-//        final String ID = "id";
+        final String ID = "id";
+        final String KEY = "key";
+        final String NAME = "name";
 //        final String VIDEO = "video";
 //        final String VOTE_AVERAGE = "vote_average";
 //        final String TITLE = "title";
@@ -67,7 +69,7 @@ public class TrailerJsonUtils {
 //        final String OVERVIEW = "overview";
 //        final String RELEASE_DATE = "release_date";
 //
-//        JSONObject movies = new JSONObject(trailersJsonString);
+        JSONObject trailers = new JSONObject(trailersJsonString);
 //
 //        // Error check
 //        if (movies.has(SUCCESS)) {
@@ -78,24 +80,27 @@ public class TrailerJsonUtils {
 //            }
 //        }
 //
-//        JSONArray results = movies.optJSONArray(RESULTS);
-//
-//        ArrayList<Movie> parsedMoviesData = new ArrayList<>();
-//
-//        for (int i=0; i<results.length(); i++) {
-//            JSONObject jsonMovie = (JSONObject) results.get(i);
+        JSONArray results = trailers.optJSONArray(RESULTS);
+
+        ArrayList<Trailer> parsedTrailersData = new ArrayList<>();
+
+        for (int i=0; i<results.length(); i++) {
+            JSONObject jsonTrailer = (JSONObject) results.get(i);
 //            // TODO complete parsing
-//            Movie movie = new Movie();
-//
+            Trailer trailer = new Trailer();
+            trailer.setId(jsonTrailer.optString(ID));
+            trailer.setKey(jsonTrailer.optString(KEY));
+            trailer.setName(jsonTrailer.optString(NAME));
+
 //            movie.setTitle(jsonMovie.optString(TITLE));
 //            movie.setReleaseDate(jsonMovie.optString(RELEASE_DATE));
 //            movie.setMoviePosterUrl(jsonMovie.optString(POSTER_PATH));
 //            movie.setVoteAverage(jsonMovie.optString(VOTE_AVERAGE));
 //            movie.setPlotSynopsis(jsonMovie.optString(OVERVIEW));
 //            parsedMoviesData.add(movie);
-//        }
-//
-//        return parsedMoviesData;
-        return null;
+            parsedTrailersData.add(trailer);
+        }
+
+        return parsedTrailersData;
     }
 }

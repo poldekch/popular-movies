@@ -4,7 +4,11 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.leopo.popularmovies.utilities.NetworkUtils;
@@ -14,9 +18,17 @@ import com.squareup.picasso.Picasso;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MovieDetailsActivity extends AppCompatActivity {
+import com.example.leopo.popularmovies.TrailerAdapter.TrailerAdapterOnClickHandler;
+
+public class MovieDetailsActivity extends AppCompatActivity implements TrailerAdapterOnClickHandler{
 
     private Movie mMovie;
+
+    private RecyclerView mRecyclerView;
+    private TrailerAdapter mTrailerAdapter;
+
+    private ProgressBar mLoadingIndicator;
+    private TextView mErrorMessageDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +38,21 @@ public class MovieDetailsActivity extends AppCompatActivity {
         Intent startingIntent = getIntent();
 
         mMovie = (Movie) startingIntent.getSerializableExtra("Movie");
+
+        mRecyclerView = findViewById(R.id.rv_trailers);
+        mErrorMessageDisplay = findViewById(R.id.tv_details_error_message_display);
+
+        // TODO
+        GridLayoutManager layoutManager
+                = new GridLayoutManager(this, 1);
+
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setHasFixedSize(true);
+
+        mTrailerAdapter = new TrailerAdapter(this);
+        mRecyclerView.setAdapter(mTrailerAdapter);
+
+        mLoadingIndicator = findViewById(R.id.pb_details_loading_indicator) ;
 
         loadTrailerData();
         populateView();
@@ -55,6 +82,26 @@ public class MovieDetailsActivity extends AppCompatActivity {
         new MovieDetailsActivity.FetchMovieTrailers().execute(mMovie.getId().toString());
     }
 
+    @Override
+    public void onClick(int clickedMovieId) {
+        // TODO
+//        Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
+//
+//        Movie movie = mMovieAdapter.getMovie(clickedMovieId);
+//        intent.putExtra("Movie", movie);
+//        startActivity(intent);
+    }
+
+    private void showMovieDataView() {
+        mErrorMessageDisplay.setVisibility(View.INVISIBLE);
+        mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    private void showErrorMessage() {
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mErrorMessageDisplay.setVisibility(View.VISIBLE);
+    }
+
     public class FetchMovieTrailers extends AsyncTask<String, Void, ArrayList<Trailer>> {
         @Override
         protected ArrayList<Trailer> doInBackground(String... params) {
@@ -71,6 +118,23 @@ public class MovieDetailsActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
+            }
+        }
+
+        /**
+         * Process loaded movie data
+         *
+         * @param trailerData
+         */
+        @Override
+        protected void onPostExecute(ArrayList<Trailer> trailerData) {
+            mLoadingIndicator.setVisibility(View.INVISIBLE);
+
+            if (trailerData != null) {
+                showMovieDataView();
+                mTrailerAdapter.setTrailersData(trailerData);
+            } else {
+                showErrorMessage();
             }
         }
     }
