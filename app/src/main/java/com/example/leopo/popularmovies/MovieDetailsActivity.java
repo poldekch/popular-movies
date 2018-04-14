@@ -1,6 +1,8 @@
 package com.example.leopo.popularmovies;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -84,6 +86,17 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
 
     @Override
     public void onClick(int clickedMovieId) {
+        String key = mTrailerAdapter.getTrailer(clickedMovieId).getKey();
+
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + key));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + key));
+
+        try {
+            startActivity(appIntent);
+        } catch (ActivityNotFoundException ex) {
+            startActivity(webIntent);
+        }
+
         // TODO
 //        Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
 //
@@ -122,7 +135,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
         }
 
         /**
-         * Process loaded movie data
+         * Process loaded trailer data
          *
          * @param trailerData
          */

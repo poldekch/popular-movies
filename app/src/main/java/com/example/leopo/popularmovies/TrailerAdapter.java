@@ -5,13 +5,12 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHolder> {
 
@@ -21,7 +20,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
     private final TrailerAdapterOnClickHandler mClickHandler;
 
     public interface TrailerAdapterOnClickHandler {
-        void onClick(int cliencedTrailerId);
+        void onClick(int id);
     }
 
     public Trailer getTrailer(int i) {
@@ -35,24 +34,6 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
      */
     public TrailerAdapter(TrailerAdapterOnClickHandler clickHandler) {
         mClickHandler = clickHandler;
-    }
-
-    public class TrailerAdapterViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
-
-        public final LinearLayout mTrailer;
-
-        public TrailerAdapterViewHolder(View view) {
-            super(view);
-
-            mTrailer = view.findViewById(R.id.ll_trailer);
-            view.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-            int clickedPosition = getAdapterPosition();
-            mClickHandler.onClick(clickedPosition);
-        }
     }
 
     @Override
@@ -82,18 +63,26 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
         notifyDataSetChanged();
     }
 
-    class TrailerViewHolder extends RecyclerView.ViewHolder {
+    class TrailerViewHolder extends RecyclerView.ViewHolder implements OnClickListener{
 
+        public final LinearLayout mTrailer;
         TextView trailerLabelView;
 
         public TrailerViewHolder(View itemView) {
             super(itemView);
 
             trailerLabelView = (TextView) itemView.findViewById(R.id.tv_trailer_label);
+            mTrailer = itemView.findViewById(R.id.ll_trailer);
+            itemView.setOnClickListener(this);
         }
 
         void bind(String trailerName) {
             trailerLabelView.setText(trailerName);
+        }
+
+        public void onClick(View view) {
+            int clickedPosition = getAdapterPosition();
+            mClickHandler.onClick(clickedPosition);
         }
     }
 }
