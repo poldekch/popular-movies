@@ -1,67 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
 
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp" >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:layout_editor_absoluteX="8dp"
+    tools:layout_editor_absoluteY="8dp">
 
-        <TextView
-            android:id="@+id/tv_movie_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="@string/once_upon"
-            android:padding="16dp"
-            android:textSize="48sp"
-            android:textColor="@android:color/white"
-            android:background="@android:color/darker_gray"
-            android:layout_marginBottom="8dp"/>
+    <TextView
+        android:id="@+id/tv_movie_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:background="@android:color/darker_gray"
+        android:padding="16dp"
+        android:textColor="@android:color/white"
+        android:textSize="48sp"
+        tools:text="@string/once_upon" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="149dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_poster"
+            android:layout_width="236dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:contentDescription="@string/movie_poster" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="149dp"
-            android:orientation="horizontal"
-            >
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="24dp">
 
-            <ImageView
-                android:id="@+id/iv_poster"
-                android:layout_width="236dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:contentDescription="@string/movie_poster"/>
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/tv_release_date"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:padding="24dp">
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tv_release_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:padding="8dp"/>
+            <TextView
+                android:id="@+id/tv_vote_average"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tv_vote_average"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:padding="8dp"/>
-
-            </LinearLayout>
         </LinearLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_plot_synopsis"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"/>
+        android:padding="8dp" />
+
+    <TextView
+        android:id="@+id/tv_reviews_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/reviews"
+        android:textStyle="bold" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_reviews"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
 
     <TextView
         android:id="@+id/tv_trailers_label"
@@ -87,9 +98,9 @@
 
     <ProgressBar
         android:id="@+id/pb_details_loading_indicator"
-        android:layout_height="42dp"
         android:layout_width="42dp"
+        android:layout_height="42dp"
         android:layout_gravity="center"
         android:visibility="invisible" />
-    </LinearLayout>
+</LinearLayout>
 

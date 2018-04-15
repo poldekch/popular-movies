@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.leopo.popularmovies.utilities.NetworkUtils;
+import com.example.leopo.popularmovies.utilities.ReviewJsonUtils;
 import com.example.leopo.popularmovies.utilities.TrailerJsonUtils;
 import com.squareup.picasso.Picasso;
 
@@ -26,8 +27,11 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
 
     private Movie mMovie;
 
-    private RecyclerView mRecyclerView;
+    private RecyclerView mTrailerRecyclerView;
     private TrailerAdapter mTrailerAdapter;
+
+    private RecyclerView mReviewRecyclerView;
+    private ReviewAdapter mReviewAdapter;
 
     private ProgressBar mLoadingIndicator;
     private TextView mErrorMessageDisplay;
@@ -41,27 +45,34 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
 
         mMovie = (Movie) startingIntent.getSerializableExtra("Movie");
 
-        mRecyclerView = findViewById(R.id.rv_trailers);
+        mTrailerRecyclerView = findViewById(R.id.rv_trailers);
+        mReviewRecyclerView = findViewById(R.id.rv_reviews);
         mErrorMessageDisplay = findViewById(R.id.tv_details_error_message_display);
 
-        // TODO
-        GridLayoutManager layoutManager
-                = new GridLayoutManager(this, 1);
+        LinearLayoutManager trailerLayoutManager
+                = new LinearLayoutManager(this);
 
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setHasFixedSize(true);
+        mTrailerRecyclerView.setLayoutManager(trailerLayoutManager);
+        mTrailerRecyclerView.setHasFixedSize(true);
+
+        LinearLayoutManager reviewLayoutManager
+                = new LinearLayoutManager(this);
+        mReviewRecyclerView.setLayoutManager(reviewLayoutManager);
+        mReviewRecyclerView.setHasFixedSize(true);
 
         mTrailerAdapter = new TrailerAdapter(this);
-        mRecyclerView.setAdapter(mTrailerAdapter);
+        mTrailerRecyclerView.setAdapter(mTrailerAdapter);
+        mReviewAdapter = new ReviewAdapter();
+        mReviewRecyclerView.setAdapter(mReviewAdapter);
 
         mLoadingIndicator = findViewById(R.id.pb_details_loading_indicator) ;
 
         loadTrailerData();
+        loadReviewData();
         populateView();
     }
 
     private void populateView() {
-
         TextView title = findViewById(R.id.tv_movie_title);
         title.setText(mMovie.getTitle());
 
@@ -80,8 +91,11 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
     }
 
     private void loadTrailerData() {
-//        showMovieDataView(); // TODO
         new MovieDetailsActivity.FetchMovieTrailers().execute(mMovie.getId().toString());
+    }
+
+    private void loadReviewData() {
+        new MovieDetailsActivity.FetchMovieReviews().execute(mMovie.getId().toString());
     }
 
     @Override
@@ -96,22 +110,17 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
         } catch (ActivityNotFoundException ex) {
             startActivity(webIntent);
         }
-
-        // TODO
-//        Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
-//
-//        Movie movie = mMovieAdapter.getMovie(clickedMovieId);
-//        intent.putExtra("Movie", movie);
-//        startActivity(intent);
     }
 
     private void showMovieDataView() {
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
-        mRecyclerView.setVisibility(View.VISIBLE);
+        mTrailerRecyclerView.setVisibility(View.VISIBLE);
+        mReviewRecyclerView.setVisibility(View.VISIBLE);
     }
 
     private void showErrorMessage() {
-        mRecyclerView.setVisibility(View.INVISIBLE);
+        mTrailerRecyclerView.setVisibility(View.INVISIBLE);
+        mReviewRecyclerView.setVisibility(View.INVISIBLE);
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
@@ -144,8 +153,43 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
             mLoadingIndicator.setVisibility(View.INVISIBLE);
 
             if (trailerData != null) {
+                // TODO common flag
                 showMovieDataView();
                 mTrailerAdapter.setTrailersData(trailerData);
+            } else {
+                showErrorMessage();
+            }
+        }
+    }
+
+    public class FetchMovieReviews extends AsyncTask<String, Void, ArrayList<Review>> {
+        @Override
+        protected ArrayList<Review> doInBackground(String... params) {
+            if (params.length == 0) {
+                return null;
+            }
+
+            String movieId = params[0];
+            URL reviewsUrl = NetworkUtils.buildReviewsUrl(movieId);
+
+            try {
+                String reviewsResponse = NetworkUtils.getApiResponse(reviewsUrl);
+                return ReviewJsonUtils.getReviewsFromJson(MovieDetailsActivity.this, reviewsResponse);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Review> reviewsData) {
+            // TODO common flag
+            mLoadingIndicator.setVisibility(View.INVISIBLE);
+
+            if (reviewsData != null) {
+                // TODO common flag
+                showMovieDataView();
+                mReviewAdapter.setReviewsData(reviewsData);
             } else {
                 showErrorMessage();
             }
