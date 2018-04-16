@@ -1,6 +1,8 @@
 package com.example.leopo.popularmovies;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +17,8 @@ import android.widget.TextView;
 
 import com.example.leopo.popularmovies.adapters.MovieAdapter;
 import com.example.leopo.popularmovies.adapters.MovieAdapter.MovieAdapterOnClickHandler;
+import com.example.leopo.popularmovies.data.MovieContract;
+import com.example.leopo.popularmovies.data.MovieDbHelper;
 import com.example.leopo.popularmovies.utilities.MovieJsonUtils;
 import com.example.leopo.popularmovies.utilities.NetworkUtils;
 
@@ -30,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     private ProgressBar mLoadingIndicator;
 
     private String mOrder = NetworkUtils.ORDER_POPULAR;
+
+    private SQLiteDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +56,29 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
         mLoadingIndicator = findViewById(R.id.pb_loading_indicator) ;
 
+        MovieDbHelper dbHelper = new MovieDbHelper(this);
+        mDb = dbHelper.getReadableDatabase();
+
+        Cursor aaa = getFavouriteMovies();
+
         loadMovieData();
     }
 
     private void loadMovieData() {
         showMovieDataView();
         new FetchMoviesTask().execute(mOrder);
+    }
+
+    private Cursor getFavouriteMovies() {
+        return mDb.query(
+                MovieContract.MovieEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
     }
 
     @Override
@@ -158,6 +181,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
             case R.id.sort_rating:
                 mOrder = NetworkUtils.ORDER_TOP_RATED;
                 loadMovieData();
+                return true;
+            case R.id.sort_favourite:
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
