@@ -1,4 +1,4 @@
-package com.example.leopo.popularmovies;
+package com.example.leopo.popularmovies.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.leopo.popularmovies.Movie;
+import com.example.leopo.popularmovies.R;
 import com.example.leopo.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 

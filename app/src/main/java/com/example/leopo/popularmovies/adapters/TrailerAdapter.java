@@ -1,4 +1,4 @@
-package com.example.leopo.popularmovies;
+package com.example.leopo.popularmovies.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,6 +9,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.example.leopo.popularmovies.R;
+import com.example.leopo.popularmovies.Trailer;
 
 import java.util.ArrayList;
 

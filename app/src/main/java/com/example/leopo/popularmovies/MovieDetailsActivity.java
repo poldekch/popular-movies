@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.leopo.popularmovies.adapters.ReviewAdapter;
+import com.example.leopo.popularmovies.adapters.TrailerAdapter;
 import com.example.leopo.popularmovies.utilities.NetworkUtils;
 import com.example.leopo.popularmovies.utilities.ReviewJsonUtils;
 import com.example.leopo.popularmovies.utilities.TrailerJsonUtils;
@@ -21,7 +23,7 @@ import com.squareup.picasso.Picasso;
 import java.net.URL;
 import java.util.ArrayList;
 
-import com.example.leopo.popularmovies.TrailerAdapter.TrailerAdapterOnClickHandler;
+import com.example.leopo.popularmovies.adapters.TrailerAdapter.TrailerAdapterOnClickHandler;
 
 public class MovieDetailsActivity extends AppCompatActivity implements TrailerAdapterOnClickHandler{
 

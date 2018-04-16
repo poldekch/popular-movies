@@ -13,7 +13,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.leopo.popularmovies.MovieAdapter.MovieAdapterOnClickHandler;
+import com.example.leopo.popularmovies.adapters.MovieAdapter;
+import com.example.leopo.popularmovies.adapters.MovieAdapter.MovieAdapterOnClickHandler;
 import com.example.leopo.popularmovies.utilities.MovieJsonUtils;
 import com.example.leopo.popularmovies.utilities.NetworkUtils;
 
