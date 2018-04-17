@@ -203,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
                 loadMovieData();
                 return true;
             case R.id.sort_favourite:
+                mOrder = NetworkUtils.ORDER_FAVOURITE;
                 ArrayList<Movie> favouriteMovies = getFavouriteMovies();
                 mMovieAdapter.setMovieData(favouriteMovies);
                 return true;
@@ -225,6 +226,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
             menu.findItem(R.id.sort_popularity).setChecked(true);
         } else if (mOrder == NetworkUtils.ORDER_TOP_RATED) {
             menu.findItem(R.id.sort_rating).setChecked(true);
+        } else if (mOrder == NetworkUtils.ORDER_FAVOURITE) {
+            menu.findItem(R.id.sort_favourite).setChecked(true);
         }
 
         return true;

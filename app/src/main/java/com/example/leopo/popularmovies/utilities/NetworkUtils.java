@@ -13,6 +13,7 @@ public class NetworkUtils {
 
     final public static String ORDER_POPULAR = "popular";
     final public static String ORDER_TOP_RATED = "top_rated";
+    final public static String ORDER_FAVOURITE = "favourite";
 
     final private static String PARAM_KEY = "api_key";
     final private static String API_KEY = "";
