@@ -1,7 +1,11 @@
 package com.example.leopo.popularmovies;
 
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +19,8 @@ import android.widget.TextView;
 
 import com.example.leopo.popularmovies.adapters.ReviewAdapter;
 import com.example.leopo.popularmovies.adapters.TrailerAdapter;
+import com.example.leopo.popularmovies.data.MovieContract;
+import com.example.leopo.popularmovies.data.MovieDbHelper;
 import com.example.leopo.popularmovies.utilities.NetworkUtils;
 import com.example.leopo.popularmovies.utilities.ReviewJsonUtils;
 import com.example.leopo.popularmovies.utilities.TrailerJsonUtils;
@@ -22,6 +28,7 @@ import com.squareup.picasso.Picasso;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.example.leopo.popularmovies.adapters.TrailerAdapter.TrailerAdapterOnClickHandler;
 
@@ -37,6 +44,10 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
 
     private ProgressBar mLoadingIndicator;
     private TextView mErrorMessageDisplay;
+
+    private boolean mFavourite = false;
+
+    private SQLiteDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +80,21 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
 
         mLoadingIndicator = findViewById(R.id.pb_details_loading_indicator) ;
 
+        MovieDbHelper dbHelper = new MovieDbHelper(this);
+        mDb = dbHelper.getWritableDatabase();
+
         loadTrailerData();
         loadReviewData();
         populateView();
+    }
+
+    private void displayFavourite() {
+        ImageView favourite = findViewById(R.id.ib_favourite);
+        if (true == mFavourite) {
+            favourite.setImageResource(R.drawable.ic_star_black_24dp);
+        } else {
+            favourite.setImageResource(R.drawable.ic_star_border_black_24dp);
+        }
     }
 
     private void populateView() {
@@ -90,6 +113,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
 
         TextView plotSynopsis = findViewById(R.id.tv_plot_synopsis);
         plotSynopsis.setText(mMovie.getPlotSynopsis());
+
+        checkFavourite();
+        displayFavourite();
     }
 
     private void loadTrailerData() {
@@ -196,5 +222,70 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
                 showErrorMessage();
             }
         }
+    }
+
+    private void checkFavourite() {
+        int movieId = mMovie.getId();
+        if(mDb == null){
+            return;
+        }
+        Cursor movie = mDb.query(
+                MovieContract.MovieEntry.TABLE_NAME,
+                new String[] {MovieContract.MovieEntry.COLUMN_MOVIE_ID},
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?",
+                new String[] { String.valueOf(movieId) },
+                null,
+                null,
+                null
+        );
+
+        if (0 == movie.getCount()) {
+            mFavourite = false;
+        } else {
+            mFavourite = true;
+        }
+    }
+
+    private void saveFavourite() {
+        if(mDb == null){
+            return;
+        }
+        ContentValues cv = new ContentValues();
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mMovie.getId());
+        cv.put(MovieContract.MovieEntry.COLUMN_POSTER_URL, mMovie.getMoviePosterUrl());
+        cv.put(MovieContract.MovieEntry.COLUMN_PLOT_SYNOPSIS, mMovie.getPlotSynopsis());
+        cv.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, mMovie.getReleaseDate());
+        cv.put(MovieContract.MovieEntry.COLUMN_TITLE, mMovie.getTitle());
+        cv.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, mMovie.getVoteAverage());
+
+        try {
+            mDb.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
+        } catch (SQLException e) {
+            //too bad :(
+        }
+    }
+
+    private void removeFavourite() {
+        int movieId = mMovie.getId();
+        if(mDb == null){
+            return;
+        }
+        mDb.delete(
+            MovieContract.MovieEntry.TABLE_NAME,
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?",
+                new String[] { String.valueOf(movieId)}
+        );
+    }
+
+
+    public void favouriteClick(View view) {
+        checkFavourite();
+        if (false == mFavourite) {
+            saveFavourite();
+        } else {
+            removeFavourite();
+        }
+        checkFavourite();
+        displayFavourite();
     }
 }

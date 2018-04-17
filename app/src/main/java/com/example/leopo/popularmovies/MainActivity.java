@@ -237,7 +237,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         if(db == null){
             return;
         }
-        //create a list of fake guests
         List<ContentValues> list = new ArrayList<>();
 
         ContentValues cv = new ContentValues();
