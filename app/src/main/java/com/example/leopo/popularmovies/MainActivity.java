@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
     private SQLiteDatabase mDb;
 
+    private static MenuItem mMenuItem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +66,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
 //        insertFakeData(mDb);
 
-        loadMovieData();
+        if (null == mMenuItem) {
+            loadMovieData();
+        } else {
+            onOptionsItemSelected(mMenuItem);
+        }
     }
 
     private void loadMovieData() {
@@ -192,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        mMenuItem = item;
         switch (item.getItemId()) {
             case R.id.sort_popularity:
                 mOrder = NetworkUtils.ORDER_POPULAR;
