@@ -181,7 +181,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
             mLoadingIndicator.setVisibility(View.INVISIBLE);
 
             if (trailerData != null) {
-                // TODO common flag
                 showMovieDataView();
                 mTrailerAdapter.setTrailersData(trailerData);
             } else {
@@ -211,11 +210,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
 
         @Override
         protected void onPostExecute(ArrayList<Review> reviewsData) {
-            // TODO common flag
             mLoadingIndicator.setVisibility(View.INVISIBLE);
 
             if (reviewsData != null) {
-                // TODO common flag
                 showMovieDataView();
                 mReviewAdapter.setReviewsData(reviewsData);
             } else {

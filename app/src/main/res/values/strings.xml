@@ -11,4 +11,5 @@
     <string name="reviews">Reviews</string>
     <string name="author">Author</string>
     <string name="content">Content</string>
+    <string name="add_favourite">Add/remove favourite</string>
 </resources>

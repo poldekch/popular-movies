@@ -69,7 +69,8 @@
                 android:layout_gravity="right"
                 android:background="#80ffffff"
                 android:onClick="favouriteClick"
-                android:src="@drawable/ic_star_border_black_24dp" />
+                android:src="@drawable/ic_star_border_black_24dp"
+                android:contentDescription="@string/add_favourite" />
         </LinearLayout>
     </LinearLayout>
 
