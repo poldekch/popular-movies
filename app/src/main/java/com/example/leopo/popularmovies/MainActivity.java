@@ -1,7 +1,9 @@
 package com.example.leopo.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +26,7 @@ import com.example.leopo.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapterOnClickHandler {
 
@@ -57,9 +60,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         mLoadingIndicator = findViewById(R.id.pb_loading_indicator) ;
 
         MovieDbHelper dbHelper = new MovieDbHelper(this);
-        mDb = dbHelper.getReadableDatabase();
+        mDb = dbHelper.getWritableDatabase();
 
-        Cursor aaa = getFavouriteMovies();
+        // insertFakeData(mDb);
 
         loadMovieData();
     }
@@ -69,8 +72,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         new FetchMoviesTask().execute(mOrder);
     }
 
-    private Cursor getFavouriteMovies() {
-        return mDb.query(
+    private ArrayList<Movie> getFavouriteMovies() {
+        Cursor dbMovies = mDb.query(
                 MovieContract.MovieEntry.TABLE_NAME,
                 null,
                 null,
@@ -79,6 +82,22 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
                 null,
                 null
         );
+
+        ArrayList<Movie> movies = new ArrayList<>();
+        Movie movie;
+        for (dbMovies.moveToFirst(); !dbMovies.isAfterLast(); dbMovies.moveToNext()) {
+            movie = new Movie();
+            movie.setTitle(dbMovies.getString(dbMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_ID)));
+            movie.setMoviePosterUrl(dbMovies.getString(dbMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_URL)));
+            movie.setPlotSynopsis(dbMovies.getString(dbMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_PLOT_SYNOPSIS)));
+            movie.setReleaseDate(dbMovies.getString(dbMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE)));
+            movie.setTitle(dbMovies.getString(dbMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE)));
+            movie.setVoteAverage(dbMovies.getString(dbMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
+
+            movies.add(movie);
+        }
+
+        return movies;
     }
 
     @Override
@@ -173,6 +192,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             case R.id.sort_popularity:
                 mOrder = NetworkUtils.ORDER_POPULAR;
@@ -183,7 +203,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
                 loadMovieData();
                 return true;
             case R.id.sort_favourite:
-
+                ArrayList<Movie> favouriteMovies = getFavouriteMovies();
+                mMovieAdapter.setMovieData(favouriteMovies);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -207,5 +228,41 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         }
 
         return true;
+    }
+
+    public static void insertFakeData(SQLiteDatabase db){
+        if(db == null){
+            return;
+        }
+        //create a list of fake guests
+        List<ContentValues> list = new ArrayList<>();
+
+        ContentValues cv = new ContentValues();
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, "311");
+        cv.put(MovieContract.MovieEntry.COLUMN_POSTER_URL, "/x733R4ISI0RbKeHhVkXdTMFmTFr.jpg");
+        cv.put(MovieContract.MovieEntry.COLUMN_PLOT_SYNOPSIS, "A former Prohibition-era Jewish gangster returns to the Lower East Side of Manhattan over thirty years later, where he once again must confront the ghosts and regrets of his old life.");
+        cv.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, "1984-05-23");
+        cv.put(MovieContract.MovieEntry.COLUMN_TITLE, "Once Upon a Time in America");
+        cv.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, "8.3");
+        list.add(cv);
+
+        try
+        {
+            db.beginTransaction();
+            //clear the table first
+            db.delete (MovieContract.MovieEntry.TABLE_NAME,null,null);
+            //go through the list and add one by one
+            for(ContentValues c:list){
+                db.insert(MovieContract.MovieEntry.TABLE_NAME, null, c);
+            }
+            db.setTransactionSuccessful();
+        }
+        catch (SQLException e) {
+            //too bad :(
+        }
+        finally
+        {
+            db.endTransaction();
+        }
     }
 }
