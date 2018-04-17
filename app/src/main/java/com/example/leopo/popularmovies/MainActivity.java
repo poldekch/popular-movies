@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         MovieDbHelper dbHelper = new MovieDbHelper(this);
         mDb = dbHelper.getWritableDatabase();
 
-        // insertFakeData(mDb);
+//        insertFakeData(mDb);
 
         loadMovieData();
     }
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         Movie movie;
         for (dbMovies.moveToFirst(); !dbMovies.isAfterLast(); dbMovies.moveToNext()) {
             movie = new Movie();
-            movie.setTitle(dbMovies.getString(dbMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_ID)));
+            movie.setId(dbMovies.getInt(dbMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_ID)));
             movie.setMoviePosterUrl(dbMovies.getString(dbMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_URL)));
             movie.setPlotSynopsis(dbMovies.getString(dbMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_PLOT_SYNOPSIS)));
             movie.setReleaseDate(dbMovies.getString(dbMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE)));
@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         List<ContentValues> list = new ArrayList<>();
 
         ContentValues cv = new ContentValues();
-        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, "311");
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, 311);
         cv.put(MovieContract.MovieEntry.COLUMN_POSTER_URL, "/x733R4ISI0RbKeHhVkXdTMFmTFr.jpg");
         cv.put(MovieContract.MovieEntry.COLUMN_PLOT_SYNOPSIS, "A former Prohibition-era Jewish gangster returns to the Lower East Side of Manhattan over thirty years later, where he once again must confront the ghosts and regrets of his old life.");
         cv.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, "1984-05-23");
