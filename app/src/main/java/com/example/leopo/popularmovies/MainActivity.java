@@ -1,5 +1,6 @@
 package com.example.leopo.popularmovies;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -78,34 +79,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         new FetchMoviesTask().execute(mOrder);
     }
 
-    private ArrayList<Movie> getFavouriteMovies() {
-        Cursor dbMovies = mDb.query(
-                MovieContract.MovieEntry.TABLE_NAME,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
-
-        ArrayList<Movie> movies = new ArrayList<>();
-        Movie movie;
-        for (dbMovies.moveToFirst(); !dbMovies.isAfterLast(); dbMovies.moveToNext()) {
-            movie = new Movie();
-            movie.setId(dbMovies.getInt(dbMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_ID)));
-            movie.setMoviePosterUrl(dbMovies.getString(dbMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_URL)));
-            movie.setPlotSynopsis(dbMovies.getString(dbMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_PLOT_SYNOPSIS)));
-            movie.setReleaseDate(dbMovies.getString(dbMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE)));
-            movie.setTitle(dbMovies.getString(dbMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE)));
-            movie.setVoteAverage(dbMovies.getString(dbMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
-
-            movies.add(movie);
-        }
-
-        return movies;
-    }
-
     @Override
     public void onClick(int clickedMovieId) {
         Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
@@ -176,6 +149,61 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         }
     }
 
+    public class FetchFavouriteMoviesTask extends AsyncTask<Void, Void, Cursor> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mLoadingIndicator.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Cursor doInBackground(Void... params) {
+            ContentResolver resolver = getContentResolver();
+
+            Cursor cursor = mDb.query(
+                    MovieContract.MovieEntry.CONTENT_URI,
+//                    MovieContract.MovieEntry.TABLE_NAME,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+            );
+            return cursor;
+        }
+
+        @Override
+        protected void onPostExecute(Cursor cursor) {
+            super.onPostExecute(cursor);
+
+            ArrayList<Movie> movies = new ArrayList<>();
+            Movie movie;
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                movie = new Movie();
+                movie.setId(cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_ID)));
+                movie.setMoviePosterUrl(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_URL)));
+                movie.setPlotSynopsis(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_PLOT_SYNOPSIS)));
+                movie.setReleaseDate(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE)));
+                movie.setTitle(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE)));
+                movie.setVoteAverage(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
+
+                movies.add(movie);
+            }
+
+            cursor.close();
+
+            mLoadingIndicator.setVisibility(View.INVISIBLE);
+
+            if (movies != null) {
+                showMovieDataView();
+                mMovieAdapter.setMovieData(movies);
+            } else {
+                showErrorMessage();
+            }
+        }
+    }
+
     /**
      * Create menu with options
      *
@@ -210,8 +238,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
                 return true;
             case R.id.sort_favourite:
                 mOrder = NetworkUtils.ORDER_FAVOURITE;
-                ArrayList<Movie> favouriteMovies = getFavouriteMovies();
-                mMovieAdapter.setMovieData(favouriteMovies);
+//                ArrayList<Movie> favouriteMovies = getFavouriteMovies();
+//                mMovieAdapter.setMovieData(favouriteMovies);
+                new FetchFavouriteMoviesTask().execute();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

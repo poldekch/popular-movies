@@ -5,6 +5,8 @@ import android.provider.BaseColumns;
 public class MovieContract {
 
     public static final class MovieEntry implements BaseColumns {
+        public final static String CONTENT_URI = "com.example.leopold.popularmovies";
+
         public static final String TABLE_NAME = "movies";
         public static final String COLUMN_MOVIE_ID = "movie_id";
         public static final String COLUMN_TITLE = "title";
