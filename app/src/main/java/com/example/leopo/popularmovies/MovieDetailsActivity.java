@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.leopo.popularmovies.adapters.ReviewAdapter;
 import com.example.leopo.popularmovies.adapters.TrailerAdapter;
@@ -46,8 +47,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
     private TextView mErrorMessageDisplay;
 
     private boolean mFavourite = false;
-
-    private SQLiteDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,9 +79,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
 
         mLoadingIndicator = findViewById(R.id.pb_details_loading_indicator) ;
 
-        MovieDbHelper dbHelper = new MovieDbHelper(this);
-        mDb = dbHelper.getWritableDatabase();
-
         loadTrailerData();
         loadReviewData();
         populateView();
@@ -114,8 +110,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
         TextView plotSynopsis = findViewById(R.id.tv_plot_synopsis);
         plotSynopsis.setText(mMovie.getPlotSynopsis());
 
-        checkFavourite();
-        displayFavourite();
+        new CheckFavouriteTask().execute();
     }
 
     private void loadTrailerData() {
@@ -221,32 +216,63 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
         }
     }
 
-    private void checkFavourite() {
-        int movieId = mMovie.getId();
-        if(mDb == null){
-            return;
-        }
-        Cursor movie = mDb.query(
-                MovieContract.MovieEntry.TABLE_NAME,
-                new String[] {MovieContract.MovieEntry.COLUMN_MOVIE_ID},
-                MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?",
-                new String[] { String.valueOf(movieId) },
-                null,
-                null,
-                null
-        );
+    public class CheckFavouriteTask extends AsyncTask<Void, Void, Cursor> {
 
-        if (0 == movie.getCount()) {
-            mFavourite = false;
-        } else {
-            mFavourite = true;
+        @Override
+        protected Cursor doInBackground(Void... voids) {
+            int movieId = mMovie.getId();
+            Cursor movie = getContentResolver().query(
+                    MovieContract.CONTENT_URI,
+                    null,
+                    MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?",
+                    new String[] {String.valueOf(movieId)},
+                    null
+            );
+            if (0 == movie.getCount()) {
+                mFavourite = false;
+            } else {
+                mFavourite = true;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Cursor cursor) {
+            displayFavourite();
+        }
+    }
+
+    public class SwitchFavouriteTask extends AsyncTask<Void, Void, Cursor> {
+
+        @Override
+        protected Cursor doInBackground(Void... voids) {
+            int movieId = mMovie.getId();
+            Cursor movie = getContentResolver().query(
+                    MovieContract.CONTENT_URI,
+                    null,
+                    MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?",
+                    new String[] {String.valueOf(movieId)},
+                    null
+            );
+            if (0 == movie.getCount()) {
+                // making favourite
+                mFavourite = true;
+                saveFavourite();
+            } else {
+                mFavourite = false;
+                removeFavourite();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Cursor cursor) {
+            displayFavourite();
         }
     }
 
     private void saveFavourite() {
-        if(mDb == null){
-            return;
-        }
+        // TODO make it async
         ContentValues cv = new ContentValues();
         cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mMovie.getId());
         cv.put(MovieContract.MovieEntry.COLUMN_POSTER_URL, mMovie.getMoviePosterUrl());
@@ -255,34 +281,20 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
         cv.put(MovieContract.MovieEntry.COLUMN_TITLE, mMovie.getTitle());
         cv.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, mMovie.getVoteAverage());
 
-        try {
-            mDb.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
-        } catch (SQLException e) {
-            //too bad :(
-        }
+        getContentResolver().insert(MovieContract.CONTENT_URI, cv);
     }
 
     private void removeFavourite() {
+        // TODO make it async
         int movieId = mMovie.getId();
-        if(mDb == null){
-            return;
-        }
-        mDb.delete(
-            MovieContract.MovieEntry.TABLE_NAME,
+        getContentResolver().delete(
+                MovieContract.CONTENT_URI,
                 MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?",
-                new String[] { String.valueOf(movieId)}
-        );
+                new String[] { String.valueOf(movieId)});
     }
 
 
     public void favouriteClick(View view) {
-        checkFavourite();
-        if (false == mFavourite) {
-            saveFavourite();
-        } else {
-            removeFavourite();
-        }
-        checkFavourite();
-        displayFavourite();
+        new SwitchFavouriteTask().execute();
     }
 }

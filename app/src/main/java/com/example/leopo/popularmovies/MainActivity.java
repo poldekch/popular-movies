@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.leopo.popularmovies.adapters.MovieAdapter;
 import com.example.leopo.popularmovies.adapters.MovieAdapter.MovieAdapterOnClickHandler;
@@ -39,8 +41,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
     private String mOrder = NetworkUtils.ORDER_POPULAR;
 
-    private SQLiteDatabase mDb;
-
     private static MenuItem mMenuItem;
 
     @Override
@@ -62,10 +62,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
         mLoadingIndicator = findViewById(R.id.pb_loading_indicator) ;
 
-        MovieDbHelper dbHelper = new MovieDbHelper(this);
-        mDb = dbHelper.getWritableDatabase();
-
-//        insertFakeData(mDb);
+//        insertFakeData();
 
         if (null == mMenuItem) {
             loadMovieData();
@@ -158,18 +155,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
         @Override
         protected Cursor doInBackground(Void... params) {
-            ContentResolver resolver = getContentResolver();
-
-            Cursor cursor = mDb.query(
-                    MovieContract.MovieEntry.CONTENT_URI,
-//                    MovieContract.MovieEntry.TABLE_NAME,
-                    null,
-                    null,
+            Cursor cursor = getContentResolver().query(
+                    MovieContract.CONTENT_URI,
                     null,
                     null,
                     null,
                     null
             );
+
             return cursor;
         }
 
@@ -268,38 +261,29 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         return true;
     }
 
-    public static void insertFakeData(SQLiteDatabase db){
-        if(db == null){
-            return;
-        }
-        List<ContentValues> list = new ArrayList<>();
+    public class InsertFakeDataTask extends AsyncTask<Void, Void, Void> {
 
-        ContentValues cv = new ContentValues();
-        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, 311);
-        cv.put(MovieContract.MovieEntry.COLUMN_POSTER_URL, "/x733R4ISI0RbKeHhVkXdTMFmTFr.jpg");
-        cv.put(MovieContract.MovieEntry.COLUMN_PLOT_SYNOPSIS, "A former Prohibition-era Jewish gangster returns to the Lower East Side of Manhattan over thirty years later, where he once again must confront the ghosts and regrets of his old life.");
-        cv.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, "1984-05-23");
-        cv.put(MovieContract.MovieEntry.COLUMN_TITLE, "Once Upon a Time in America");
-        cv.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, "8.3");
-        list.add(cv);
+        @Override
+        protected Void doInBackground(Void... voids) {
+            List<ContentValues> list = new ArrayList<>();
 
-        try
-        {
-            db.beginTransaction();
-            //clear the table first
-            db.delete (MovieContract.MovieEntry.TABLE_NAME,null,null);
-            //go through the list and add one by one
-            for(ContentValues c:list){
-                db.insert(MovieContract.MovieEntry.TABLE_NAME, null, c);
-            }
-            db.setTransactionSuccessful();
+            ContentValues cv = new ContentValues();
+            cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, 311);
+            cv.put(MovieContract.MovieEntry.COLUMN_POSTER_URL, "/x733R4ISI0RbKeHhVkXdTMFmTFr.jpg");
+            cv.put(MovieContract.MovieEntry.COLUMN_PLOT_SYNOPSIS, "A former Prohibition-era Jewish gangster returns to the Lower East Side of Manhattan over thirty years later, where he once again must confront the ghosts and regrets of his old life.");
+            cv.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, "1984-05-23");
+            cv.put(MovieContract.MovieEntry.COLUMN_TITLE, "Once Upon a Time in America");
+            cv.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, "8.3");
+            list.add(cv);
+
+            getContentResolver().delete(MovieContract.CONTENT_URI, null, null);
+            getContentResolver().insert(MovieContract.CONTENT_URI, cv);
+
+            return null;
         }
-        catch (SQLException e) {
-            //too bad :(
-        }
-        finally
-        {
-            db.endTransaction();
-        }
+    }
+
+    public void insertFakeData(){
+        new InsertFakeDataTask().execute();
     }
 }
