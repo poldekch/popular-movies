@@ -272,7 +272,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
     }
 
     private void saveFavourite() {
-        // TODO make it async
+        // Called from within asynctask
         ContentValues cv = new ContentValues();
         cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mMovie.getId());
         cv.put(MovieContract.MovieEntry.COLUMN_POSTER_URL, mMovie.getMoviePosterUrl());
@@ -285,7 +285,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
     }
 
     private void removeFavourite() {
-        // TODO make it async
+        // Called from within asynctask
         int movieId = mMovie.getId();
         getContentResolver().delete(
                 MovieContract.CONTENT_URI,
