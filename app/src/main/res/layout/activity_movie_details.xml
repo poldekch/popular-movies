@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:layout_editor_absoluteX="8dp"
     tools:layout_editor_absoluteY="8dp">
+
+<LinearLayout
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/tv_movie_title"
@@ -81,19 +84,6 @@
         android:padding="8dp" />
 
     <TextView
-        android:id="@+id/tv_reviews_label"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text="@string/reviews"
-        android:textStyle="bold" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_reviews"
-        android:layout_width="match_parent"
-        android:layout_height="100dp" />
-
-    <TextView
         android:id="@+id/tv_trailers_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -104,7 +94,20 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_trailers"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_reviews_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/reviews"
+        android:textStyle="bold" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_reviews"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/tv_details_error_message_display"
@@ -123,3 +126,4 @@
         android:visibility="invisible" />
 </LinearLayout>
 
+</ScrollView>
