@@ -4,8 +4,6 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Parcelable;
@@ -17,12 +15,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.leopo.popularmovies.adapters.ReviewAdapter;
 import com.example.leopo.popularmovies.adapters.TrailerAdapter;
 import com.example.leopo.popularmovies.data.MovieContract;
-import com.example.leopo.popularmovies.data.MovieDbHelper;
 import com.example.leopo.popularmovies.utilities.NetworkUtils;
 import com.example.leopo.popularmovies.utilities.ReviewJsonUtils;
 import com.example.leopo.popularmovies.utilities.TrailerJsonUtils;
@@ -30,7 +26,6 @@ import com.squareup.picasso.Picasso;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 import com.example.leopo.popularmovies.adapters.TrailerAdapter.TrailerAdapterOnClickHandler;
 
@@ -333,7 +328,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
                 MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?",
                 new String[] { String.valueOf(movieId)});
     }
-
 
     public void favouriteClick(View view) {
         new SwitchFavouriteTask().execute();

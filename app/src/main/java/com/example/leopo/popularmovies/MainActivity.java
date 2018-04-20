@@ -1,12 +1,8 @@
 package com.example.leopo.popularmovies;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
@@ -20,12 +16,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.example.leopo.popularmovies.adapters.MovieAdapter;
 import com.example.leopo.popularmovies.adapters.MovieAdapter.MovieAdapterOnClickHandler;
 import com.example.leopo.popularmovies.data.MovieContract;
-import com.example.leopo.popularmovies.data.MovieDbHelper;
 import com.example.leopo.popularmovies.utilities.MovieJsonUtils;
 import com.example.leopo.popularmovies.utilities.NetworkUtils;
 
@@ -138,7 +133,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         mRecyclerView.setVisibility(View.INVISIBLE);
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
-
 
     public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
 
@@ -275,8 +269,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
                 return true;
             case R.id.sort_favourite:
                 mOrder = NetworkUtils.ORDER_FAVOURITE;
-//                ArrayList<Movie> favouriteMovies = getFavouriteMovies();
-//                mMovieAdapter.setMovieData(favouriteMovies);
                 new FetchFavouriteMoviesTask().execute();
                 return true;
             default:

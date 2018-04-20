@@ -1,7 +1,5 @@
 package com.example.leopo.popularmovies;
 
-import java.io.Serializable;
-
 public class Trailer {
     private String mId;
     private String mKey;
