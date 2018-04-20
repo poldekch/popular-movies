@@ -98,14 +98,14 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
         title.setText(mMovie.getTitle());
 
         TextView releaseDate = findViewById(R.id.tv_release_date);
-        releaseDate.setText("Released: " + mMovie.getReleaseDate());
+        releaseDate.setText("Released:\n" + mMovie.getReleaseDate());
 
         ImageView poster = findViewById(R.id.iv_poster);
         URL url = NetworkUtils.buildImageUrl(mMovie.getMoviePosterUrl());
         Picasso.with(this).load(url.toString()).into(poster);
 
         TextView voteAverage = findViewById(R.id.tv_vote_average);
-        voteAverage.setText("Rating: " + mMovie.getVoteAverage() + "/10");
+        voteAverage.setText("Rating:\n" + mMovie.getVoteAverage() + "/10");
 
         TextView plotSynopsis = findViewById(R.id.tv_plot_synopsis);
         plotSynopsis.setText(mMovie.getPlotSynopsis());
