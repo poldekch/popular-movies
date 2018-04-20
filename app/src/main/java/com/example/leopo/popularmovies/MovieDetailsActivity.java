@@ -8,6 +8,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,6 +44,15 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
     private RecyclerView mReviewRecyclerView;
     private ReviewAdapter mReviewAdapter;
 
+    private LinearLayoutManager mTrailerLayoutManager;
+    private LinearLayoutManager mReviewLayoutManager;
+
+    public static final String TRAILERS_STATE_KEY = "trailers";
+    public static final String REVIEWS_STATE_KEY = "reviews";
+
+    private Parcelable mTrailersState;
+    private Parcelable mReviewsState;
+
     private ProgressBar mLoadingIndicator;
     private TextView mErrorMessageDisplay;
 
@@ -61,15 +71,13 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
         mReviewRecyclerView = findViewById(R.id.rv_reviews);
         mErrorMessageDisplay = findViewById(R.id.tv_details_error_message_display);
 
-        LinearLayoutManager trailerLayoutManager
-                = new LinearLayoutManager(this);
+        mTrailerLayoutManager = new LinearLayoutManager(this);
 
-        mTrailerRecyclerView.setLayoutManager(trailerLayoutManager);
+        mTrailerRecyclerView.setLayoutManager(mTrailerLayoutManager);
         mTrailerRecyclerView.setHasFixedSize(true);
 
-        LinearLayoutManager reviewLayoutManager
-                = new LinearLayoutManager(this);
-        mReviewRecyclerView.setLayoutManager(reviewLayoutManager);
+        mReviewLayoutManager = new LinearLayoutManager(this);
+        mReviewRecyclerView.setLayoutManager(mReviewLayoutManager);
         mReviewRecyclerView.setHasFixedSize(true);
 
         mTrailerAdapter = new TrailerAdapter(this);
@@ -82,6 +90,39 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
         loadTrailerData();
         loadReviewData();
         populateView();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        mTrailersState = mTrailerLayoutManager.onSaveInstanceState();
+        mReviewsState = mReviewLayoutManager.onSaveInstanceState();
+
+        outState.putParcelable(TRAILERS_STATE_KEY, mTrailersState);
+        outState.putParcelable(REVIEWS_STATE_KEY, mReviewsState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mTrailersState = savedInstanceState.getParcelable(TRAILERS_STATE_KEY);
+            mReviewsState = savedInstanceState.getParcelable(REVIEWS_STATE_KEY);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mTrailersState != null) {
+            mTrailerLayoutManager.onRestoreInstanceState(mTrailersState);
+        }
+        if (mReviewsState != null) {
+            mReviewLayoutManager.onRestoreInstanceState(mReviewsState);
+        }
     }
 
     private void displayFavourite() {

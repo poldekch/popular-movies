@@ -8,6 +8,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -37,6 +38,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
 
+    private GridLayoutManager mLayoutManager;
+
+    public static final String MOVIES_STATE_KEY = "movies";
+
+    private Parcelable mMoviesState;
+
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
 
@@ -52,10 +59,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         mRecyclerView = findViewById(R.id.rv_movies);
         mErrorMessageDisplay = findViewById(R.id.tv_error_message_display);
 
-        GridLayoutManager layoutManager
-                = new GridLayoutManager(this, numberOfColumns());
+        mLayoutManager = new GridLayoutManager(this, numberOfColumns());
 
-        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
 
         mMovieAdapter = new MovieAdapter(this);
@@ -69,6 +75,32 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
             loadMovieData();
         } else {
             onOptionsItemSelected(mMenuItem);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        mMoviesState = mLayoutManager.onSaveInstanceState();
+        outState.putParcelable(MOVIES_STATE_KEY, mMoviesState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mMoviesState = savedInstanceState.getParcelable(MOVIES_STATE_KEY);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mMoviesState != null) {
+            mLayoutManager.onRestoreInstanceState(mMoviesState);
         }
     }
 
