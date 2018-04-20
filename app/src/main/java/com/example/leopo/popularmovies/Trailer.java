@@ -2,7 +2,7 @@ package com.example.leopo.popularmovies;
 
 import java.io.Serializable;
 
-public class Trailer implements Serializable {
+public class Trailer {
     private String mId;
     private String mKey;
     private String mName;

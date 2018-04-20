@@ -65,7 +65,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
 
         Intent startingIntent = getIntent();
 
-        mMovie = (Movie) startingIntent.getSerializableExtra("Movie");
+        mMovie = (Movie) startingIntent.getParcelableExtra("Movie");
 
         mTrailerRecyclerView = findViewById(R.id.rv_trailers);
         mReviewRecyclerView = findViewById(R.id.rv_reviews);
