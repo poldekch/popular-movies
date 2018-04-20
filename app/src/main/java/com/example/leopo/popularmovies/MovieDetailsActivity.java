@@ -269,6 +269,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
             } else {
                 mFavourite = true;
             }
+            movie.close();
             return null;
         }
 
@@ -298,6 +299,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
                 mFavourite = false;
                 removeFavourite();
             }
+            movie.close();
             return null;
         }
 
