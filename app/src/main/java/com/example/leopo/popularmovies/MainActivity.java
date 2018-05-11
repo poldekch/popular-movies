@@ -323,3 +323,4 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         new InsertFakeDataTask().execute();
     }
 }
+
